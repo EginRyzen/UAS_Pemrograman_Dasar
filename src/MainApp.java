@@ -26,6 +26,7 @@ public class MainApp {
         };
 
         // Ini adalah bebarapa contoh variabel
+        private static boolean isRunning = true;
         private static String role = "";
         private static String nama = "";
         private static boolean isLoggedIn = false;
@@ -138,7 +139,7 @@ public class MainApp {
                 // Header menu
                 System.out.println("╔════════════════════════════════════════════════╗");
                 System.out.println("║             ★ Selamat Datang ★                 ║");
-                System.out.println("║       Di Aplikasi Layanan Kos Kami 🏠          ║");
+                System.out.println("║   Di Aplikasi Layanan Kos Valensy De Kost 🏠   ║");
                 System.out.println("╚════════════════════════════════════════════════╝");
 
                 // Looping for ini di gunakan untuk melooping data kelompok
@@ -154,7 +155,7 @@ public class MainApp {
 
                 // Footer dan prompt
                 System.out.println("-------------------------------------------");
-                System.out.print("👉 Pilih nomor kota (0 untuk keluar): ");
+                System.out.print("👉 Pilih nomor kota (0 untuk logout): ");
 
         }
 
@@ -303,7 +304,7 @@ public class MainApp {
                 List<Kos> daftarKos = daftarKosPerKota.get(kotaTerpilih);
 
                 // Daftar kode promo yang valid
-                String[] kodePromoValid = { "DISKON20", "PROMO2024", "HEMATKOS" };
+                String[] kodePromoValid = { "DISKON20", "PROMO2025", "HEMATKOS" };
 
                 System.out.println("\n╔══════════════════════════════════════════════════════╗");
                 System.out.println("                📋 Booking Kos di " + kotaTerpilih + "               ");
@@ -933,28 +934,12 @@ public class MainApp {
                 }
         }
 
-        // private static void prosesPilihanMenuUser(Scanner scanner, String
-        // kotaTerpilih, int pilihanMenu) {
-        // switch (pilihanMenu) {
-        // case 1 -> tampilkanDaftarKos(kotaTerpilih);
-        // case 2 -> tambahKos(kotaTerpilih, scanner);
-        // case 3 -> bookingKos(kotaTerpilih, scanner);
-        // case 4 -> manipulasiSubstring(scanner, kotaTerpilih);
-        // case 5 -> manipulasiContains(scanner, kotaTerpilih);
-        // case 6 -> manipulasiLoworUp(scanner, kotaTerpilih, true);
-        // case 7 -> manipulasiLoworUp(scanner, kotaTerpilih, false);
-        // case 8 -> manipulasiReplace(scanner, kotaTerpilih);
-        // case 9 -> manipulasiLength(scanner, kotaTerpilih);
-        // case 10 -> KembaliMenuKota();
-        // default -> System.out.println("Pilihan menu tidak valid.");
-        // }
-        // }
-
         private static int pilihKota(Scanner scanner) {
                 while (true) {
-                        int pilihanKota = bacaInputAngka(scanner, "Masukkan nomor kota: ");
+                        int pilihanKota = bacaInputAngka(scanner, "\nMasukkan nomor: ");
 
                         if (pilihanKota == 0) {
+                                isLoggedIn = false;
                                 return 0; // Indikasi untuk keluar dari aplikasi
                         }
 
@@ -981,6 +966,15 @@ public class MainApp {
                 }
         }
 
+        private static void LoginMenu() {
+                System.out.println("\n╔═══════════════════════════════════════╗");
+                System.out.println("║      Menu Login Valensy De Kost 🏠    ║");
+                System.out.println("╚═══════════════════════════════════════╝");
+                System.out.println("1. Login");
+                System.out.println("2. Stop");
+                System.out.print("Pilih opsi (1-2): ");
+        }
+
         /**
          * Poin masuk program.
          * 
@@ -995,30 +989,52 @@ public class MainApp {
                 Scanner scanner = new Scanner(System.in);
                 inisialisasiData();
 
-                while (!isLoggedIn) {
-                        tampilkanMenuLogin(scanner);
-                }
+                while (isRunning) {
+                        LoginMenu();
 
-                while (true) {
-                        tampilkanMenuKota();
-                        int pilihanKota = pilihKota(scanner);
+                        int opsi = scanner.nextInt();
+                        scanner.nextLine();
 
-                        if (pilihanKota == 0) {
-                                tampilAkhir();
-                                break;
+                        switch (opsi) {
+                                case 1:
+
+                                        while (!isLoggedIn) {
+                                                tampilkanMenuLogin(scanner);
+                                        }
+
+                                        while (true) {
+                                                tampilkanMenuKota();
+                                                int pilihanKota = pilihKota(scanner);
+
+                                                if (pilihanKota == 0) {
+                                                        tampilAkhir();
+                                                        break;
+                                                }
+
+                                                String kotaTerpilih = kotaKos[pilihanKota - 1];
+
+                                                boolean kembaliKeMenuKota = menuUtama(scanner, kotaTerpilih, role,
+                                                                nama);
+
+                                                if (kembaliKeMenuKota) {
+                                                        // Jika pengguna memilih untuk kembali, ulangi dari menu kota
+                                                        continue;
+                                                }
+
+                                        }
+                                        break;
+
+                                case 2:
+                                        // Keluar dari aplikasi
+                                        System.out.println("\n🔒 Aplikasi dihentikan. Terima kasih!");
+                                        isRunning = false;
+                                        isLoggedIn = false;
+                                        break;
+
+                                default:
+                                        System.out.println("❌ Pilihan tidak valid. Masukkan 1 atau 2.");
                         }
-
-                        String kotaTerpilih = kotaKos[pilihanKota - 1];
-
-                        boolean kembaliKeMenuKota = menuUtama(scanner, kotaTerpilih, role, nama);
-
-                        if (kembaliKeMenuKota) {
-                                // Jika pengguna memilih untuk kembali, ulangi dari menu kota
-                                continue;
-                        }
-
                 }
                 scanner.close();
         }
 }
-
